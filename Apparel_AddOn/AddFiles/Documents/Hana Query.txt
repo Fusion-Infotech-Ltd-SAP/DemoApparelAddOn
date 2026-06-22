@@ -1,0 +1,218 @@
+#TEMPORARY 
+CREATE LOCAL TEMPORARY TABLE #output_table ("CardCode" NVARCHAR(100), "Date" NVARCHAR(100),"PrcCode" NVARCHAR(100), "PrcName" NVARCHAR(100));
+insert into #output_table	
+select distinct A."CardCode",TO_VARCHAR(A."DocDate",'DD') "Date", P."PrcCode", P."PrcName"
+from ORCT A
+inner join OPRC P on A."U_BRANCH"=P."PrcCode"
+where TO_VARCHAR(A."DocDate",'YYYYMMDD')>='20240301' and TO_VARCHAR(A."DocDate",'YYYYMMDD')<='20240306' 
+and P."PrcCode"='1003' and A."Canceled"='N'	;
+															
+select A."Date", A."PrcCode", A."PrcName",0, 0, 0,count(A."CardCode") as "Total No. of Customer",0	 
+from #output_table A
+group by A."Date", A."PrcCode", A."PrcName"	;
+DROP TABLE  #output_table 	;\
+#END TEMPORARY 	
+
+''''''''''''''''''''''declare variable -------
+do
+begin
+declare code varchar(20);
+
+code := '1000013';
+
+SELECT * FROM "OINV"  WHERE "CardCode" = :code;
+end
+''''''''''''''''''''''End declare variable -------
+
+
+select A."Date", A."PrcCode", A."PrcName",0, 0, 0,count(A."CardCode") as "Total No. of Customer",0	 
+from (select distinct A."CardCode",TO_VARCHAR(A."DocDate",'DD') "Date", P."PrcCode", P."PrcName"
+from ORCT A with (NOLOCK)
+inner join OPRC P with (NOLOCK) on A."U_BRANCH"=P."PrcCode"
+where TO_VARCHAR(A."DocDate",'YYYYMMDD')>='20240301' and TO_VARCHAR(A."DocDate",'YYYYMMDD')<='20240306' 
+where TO_VARCHAR(A."DocDate", 'YYYYMMDD') between '20240401' and '20240410'
+and P."PrcCode"='1003' and A."Canceled"='N'	) A
+group by A."Date", A."PrcCode", A."PrcName"	;
+
+
+
+ where A."Canceled"='N'
+INNER JOIN OADM D with (NOLOCK) on 1=1
+IFNULL(P_PRC,'')=''
+ifnull(CR."U_PMNTP",'-1')
+CAST(C."ItmsGrpCod" AS Nvarchar)
+CAST(E."OnHand" AS Numeric (19,3)) "OnHand"
+CAST((A."InQty")AS NUMERIC (19,3))
+ ***DateFormate***
+TO_VARCHAR(A."DocDate",'YYYYMMDD')>='20240301'
+TO_VARCHAR(A."DocDate",'MM')=M_MONTH AND TO_VARCHAR(A."DocDate",'YYYY')=Y_YEAR
+TO_CHAR(A."Recontact",'DD/MM/YYYY') "ActivityDate"
+Max(A."DocDate") "Last Transaction Date"
+CAST(DAYS_BETWEEN(TO_CHAR(A."U_BIRTHDT",'YYYYMMDD'),NOW())/365 as INT) "Age"
+AND TO_CHAR(A."Recontact",'YYYYMMDD') >=CASE WHEN IFNULL(P_FromDate,'')='' THEN '00010101' ELSE IFNULL(P_FromDate,'') END
+AND TO_CHAR(A."Recontact",'YYYYMMDD') <=CASE WHEN IFNULL(P_TODate,'')='' THEN '99991231' ELSE IFNULL(P_ToDate,'') END
+
+LEFT(RIGHT(IFNULL(A."BeginTime",0)+10000 ,4),2) ||':' ||RIGHT(RIGHT(IFNULL(A."BeginTime",0)+10000,4),2) "StartTime",
+LEFT( RIGHT(IFNULL(A."ENDTime",0)+10000,4),2) ||':' ||RIGHT( RIGHT(IFNULL(A."ENDTime",0)+10000,4),2) "StartTime",
+
+if(IFNULL(P_Branch,'')='1008') then 
+select * from OCRD
+Else
+select * from OCRD
+End If;
+
+#Procedure 
+CREATE Procedure DTS_REPORT_LEAD_COUNT
+( 
+ in F_DATE Nvarchar(10),T_DATE Nvarchar(10), P_PRC Nvarchar (10)
+)
+LANGUAGE SQLSCRIPT
+SQL SECURITY INVOKER
+AS
+Begin
+End
+#End Procedure
+
+#Case
+case ehen ifnull(P_PRC,'')='' then '' else cast(P."PrcCode" as Varchar) end
+
+WHERE B."ItemClass"=2
+AND CASE WHEN IFNULL(I_CODE,'')='' THEN '' ELSE A."ItemCode" END= CASE WHEN IFNULL(I_CODE,'')='' THEN '' ELSE IFNULL(I_CODE,'') END
+AND CASE WHEN IFNULL(I_GRP,'')='' THEN '' ELSE CAST(C."ItmsGrpCod" AS Nvarchar) END= CASE WHEN IFNULL(I_GRP,'')='' THEN '' ELSE IFNULL(I_GRP,'') END
+#End Case
+
+
+
+
+SELECT ABS (-1) "absolute" FROM DUMMY;
+select v."PrcCode",v."PrcName",v."Consultation",v."Regular Price",sum(v."Quantity") "Quantity",
+       sum(v."Discount") "Discount",sum(v."VatSum") "VatSum"
+from (
+select B."DocEntry",B."LineNum", B."Dscription" "Consultation",B."Quantity",B."PriceBefDi" "Regular Price"
+,(B."Quantity"*B."PriceBefDi")-B."LineTotal" "Discount", B."VatSum",E."PrcCode",E."PrcName"
+from OINV A
+inner join INV1 B on A."DocEntry"=B."DocEntry"
+inner join OITM C on B."ItemCode"=C."ItemCode"
+inner join OITB D on C."ItmsGrpCod"=D."ItmsGrpCod"
+left join OPRC E on A."U_BRANCH"=E."PrcCode"
+where C."ItemClass"=1 and A."CANCELED"='N'
+      and IfNull(B."U_ITEMHIDE",'N')='N'
+      --AND CASE WHEN IFNULL(P_PRC,'')='' THEN '' ELSE cast(P."PrcCode" as Varchar) END= CASE WHEN IFNULL(P_PRC,'')='' THEN '' ELSE IFNULL(P_PRC,'') END
+      AND TO_VARCHAR(A."DocDate",'YYYYMMDD') between '20240101' and '20240201'
+      and D."ItmsGrpCod" IN (146,147,148)
+      ) v
+      group by v."PrcCode",v."PrcName",v."Consultation",v."Regular Price"
+      order by v."PrcCode"
+
+Select count (*) into TxtNum 
+from "ODLN" A
+where A."DocEntry"=list_of_cols_val_tab_del and A."U_GROSSWT"<A."U_NETWT";
+
+Sales Quation Row Table check Duplicate  Remark entry validation
+IF (:transaction_type ='A' or :transaction_type ='U') AND (:Object_type = '23') THEN 
+if exists(select Top 1 Count(ifnull("U_REMARKS",''))
+     from  "QUT1" 
+      where  "DocEntry"= list_of_cols_val_tab_del and ifnull("U_REMARKS",'') <> ''
+      group by ifnull("U_REMARKS",'')
+       having Count(ifnull("U_REMARKS",'')) >1) THEN
+error := 401;
+error_message := 'REMARKS exists, check again please.';
+end if; 
+end if;
+
+--------------------------------------------
+/* SELECT * FROM OINV T0 */ 
+DECLARE FDT DATE; 
+FDT :=/* T0."DocDate" */'[%0]';
+ 
+/* SELECT * FROM OINV T1 */ 
+DECLARE TDT DATE;
+TDT :=/* T1."DocDate" */'[%1]';
+
+/* select from OINV T2 */ 
+Declare Branch VARCHAR(100);
+  Branch :=/* T2."U_BRANCH" */'[%2]';
+
+A."DocDate" BETWEEN FDT AND TDT
+
+
+-----------Optional CardCode parameter--------------------
+SELECT 
+    T0."DocNum" AS "PO Number", 
+    T0."DocTotal", 
+    T0."CardCode", 
+    T0."CardName", 
+    T0."DocDate", 
+    T0."DocCur", 
+    T1."ItemCode", 
+    T1."Dscription", 
+    T1."Quantity"
+FROM 
+    OPOR T0  
+INNER JOIN 
+    POR1 T1 ON T0."DocEntry" = T1."DocEntry" 
+WHERE 
+    T0."CANCELED" = 'N' 
+    AND T0."DocDate" >= [%0]  -- Date From
+    AND T0."DocDate" <= [%1]  -- Date To
+    AND (T0."CardCode" = [%2] OR [%2] IS NULL OR [%2] = '')  -- Optional CardCode parameter
+-----------Optional CardCode parameter--------------------
+-------------------Query Optimization-------------
+select * from M_ACTIVE_PROCEDURES where procedure_name='nameofprocedure';
+select * from M_ACTIVE_PROCEDURES where procedure_connection_id = current_connection
+https://www.youtube.com/watch?v=1n4DRervYLw
+https://www.youtube.com/watch?v=JLZcUEQIYD4
+
+
+select A."SlpName"
+from "OSLP" A
+inner join "OHEM" B on A."SlpCode"=B."salesPrson"
+where B."dept"='221' and B."position"='188' and A."SlpCode"=$[@FIL_TRGT1."U_SEMPCODE"]
+-----------------------------------------------------------------------------------------------------------
+SELECT S."ItemCode",S."Warehouse",S."BatchNum",S."InDate",S."StockQty",S."StockQty"*L1."CalcPrice" AS "StockVal"
+		FROM (
+				SELECT I."ItemCode",S."WhsCode" AS "Warehouse",S."BatchNum" ,S."InDate",S."BaseType",S."BaseEntry",S."BaseLinNum",
+					sum(CASE S1."Direction" WHEN 0 THEN S1."Quantity" ELSE S1."Quantity"*(-1) END) AS "StockQty"
+				FROM OITM I  INNER JOIN OIBT S  ON S."ItemCode"=I."ItemCode" --AND S.InDate<=@ASONDATE            
+					INNER JOIN "IBT1" S1 ON S1."ItemCode"=S."ItemCode" AND S1."BatchNum"=S."BatchNum"-- AND S1.DocDate<=@ASONDATE --AND S1.BaseType<>67
+				WHERE I."ManBtchNum"='Y'
+				GROUP BY I."ItemCode",S."WhsCode",S."BatchNum",S."IntrSerial",S."InDate",S."BaseType",S."BaseEntry",S."BaseLinNum"--,L1.CalcPrice
+				HAVING SUM(CASE S1."Direction" WHEN 0 THEN 1 ELSE -1 END) <> 0 
+			) S INNER JOIN "OIVL" T ON T."TransType"=S."BaseType" AND T."CreatedBy"=S."BaseEntry" AND T."DocLineNum"=S."BaseLinNum" AND T."ItemCode"=S."ItemCode"
+				INNER JOIN "IVL1" L1 ON L1."TransSeq"=T."TransSeq" AND L1."LayerID"=0
+------------------------------------------------------------------------------------------------------------------
+
+SELECT TO_VARCHAR(TO_TIME(LPAD(T0."CreateTS", 6, '0'), 'HH24MISS'), 'HH12:MI:SS AM') AS "Time"
+FROM ORDR T0
+
+----------------------------------Inventory Log Table------------------------
+SELECT
+ T0."ManagedBy",
+ T0."ApplyType",
+  T0."ItemCode",
+
+  T2."DistNumber",
+
+  T3."DocEntry" as "Delivery #",
+
+  T3."CardCode", T3."CardName",T3."CntctCode"
+
+FROM 
+
+  OITL T0 
+
+  INNER JOIN ITL1 T1 ON T0."LogEntry" = T1."LogEntry" 
+
+  INNER JOIN OBTN T2 ON t2."ItemCode" = T1."ItemCode" 
+                    AND t2."SysNumber" = t1."SysNumber"
+
+ INNER JOIN ODLN T3 ON T3."DocEntry" = T0."ApplyEntry"
+
+WHERE 
+
+  T0."ManagedBy" = '10000044' AND 
+
+  T0."ApplyType" = '15'
+--------------------------------------inv Log Table------------
+  select * from "OILM"
+    select * from "ILM1"

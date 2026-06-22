@@ -1,0 +1,202 @@
+ALTER PROCEDURE "FFS_SP_ITEM_STOCK_MONTHWISE" (FDT DATE, TDT Date, ITEM Varchar(50), BRANCH Varchar(50), MANUFACTURER Varchar(100))
+AS
+BEGIN
+
+	DECLARE COLUMN_NAMES VARCHAR(2147483647);
+	DECLARE SQL_STRING VARCHAR(2147483647);
+	DECLARE SQL_STRING2 VARCHAR(2147483647);
+
+	Create Local Temporary Table "#Deatils"
+	("Month" Varchar(25),
+	 "MonthNumber" Int,
+	 "Year" Int,
+	 "MonthYear" Varchar(25),
+	 "ItemCode" Varchar(50),
+	 "ItemName" Varchar(250),
+	 "Manufacturer" Varchar(250),
+	 "CountryOfOrigin" Varchar(50),
+	 "WhsCode" Varchar(25),
+	 "SaleQuantity" Double,
+	 "Quantity in Transit/Under Shipment" Varchar(250),
+	 "Present Stock" Double,
+	 "Commited" Double,
+	 "Ordered" Double,
+	 "SalesReturnQty" Double,
+	 "LastYearSales" Double,
+	 "LastYearTotalSales" Double
+	);
+	
+	Create Local Temporary Table "#Month"
+	("Month" Varchar(25),
+	 "MonthNumber" Int,
+	 "Year" Int,
+	 "MonthYear" Varchar(25)
+	);
+	
+	INSERT INTO "#Deatils"
+	Select IfNull(I."Month",INITCAP(MonthName(TW."updateDate"))) As "Month",
+		   IfNull(I."MonthNumber",Month(TW."updateDate")) As "MonthNumber",
+		   IfNull(I."Year",Year(TW."updateDate")) As "Year",
+		   IfNull(I."MonthYear",MonthName(TW."updateDate") || ', ' || Year(TW."updateDate")) As "MonthYear",
+		   IT."ItemCode",IT."ItemName", M."FirmName" As "Manufacturer",IfNull(C."Name", '') As "CountryOfOrigin",
+		   TW."WhsCode",IfNull(I."Quantity",0) As "SalesQuantity",
+		   IfNull(P."Quantity in Transit/Under Shipment",'') As "Quantity in Transit/Under Shipment",
+		   TW."OnHand" As "Present Stock", TW."IsCommited" As "Commited", TW."OnOrder" As "Ordered",
+		   IfNull(R."SalesReturnQty", 0) As "SalesReturnQty",
+		   IfNull(S."LastYearSales",0) As "LastYearSales",
+		   IfNull(T."LastYearTotalSales",0) As "LastYearTotalSales"
+      From OITM IT
+	       Inner Join
+		   (Select "ItemCode","WhsCode","OnHand", "IsCommited", "OnOrder","updateDate"
+		      From OITW
+		     Where "OnHand"+ "IsCommited"+ "OnOrder" > 0 --And "ItemCode" = 'IT0893'
+		   ) TW On IT."ItemCode" = TW."ItemCode"
+		   Left Join
+		   (Select INITCAP(MonthName(I."DocDate")) As "Month",
+		           Month(I."DocDate") As "MonthNumber",
+		           Year(I."DocDate") As "Year",
+		           MonthName(I."DocDate") || ', ' || Year(I."DocDate") As "MonthYear",
+		           I1."ItemCode",Sum(I1."Quantity") As "Quantity","WhsCode","BPLName"
+		      From OINV I
+		           Inner Join INV1 I1 On I."DocEntry" = I1."DocEntry"
+		     Where I."DocDate" Between :FDT And :TDT --And I1."ItemCode" = 'IT0893'
+		       And I."CANCELED" = 'N'
+		     Group By I1."ItemCode","WhsCode",MonthName(I."DocDate") || ', ' || Year(I."DocDate"),INITCAP(MonthName(I."DocDate")),
+		           Month(I."DocDate"),Year(I."DocDate"),"BPLName"
+		     /*Union All
+		    Select INITCAP(MonthName(I."DocDate")) As "Month",
+		           Month(I."DocDate") As "MonthNumber",
+		           Year(I."DocDate") As "Year",
+		           MonthName(I."DocDate") || ', ' || Year(I."DocDate") As "MonthYear",
+		           I1."ItemCode",Sum("Quantity") As "Quantity","WhsCode","BPLName"
+		      From OWTR I
+		           Inner Join WTR1 I1 On I."DocEntry" = I1."DocEntry"
+		     Where I."DocDate" Between :FDT And :TDT --And I1."ItemCode" = 'IT0893'
+		       And I."CANCELED" = 'N'
+		     Group By I1."ItemCode","WhsCode",MonthName(I."DocDate") || ', ' || Year(I."DocDate"),INITCAP(MonthName(I."DocDate")),
+		           Month(I."DocDate"),Year(I."DocDate"),"BPLName"*/
+           ) I On IT."ItemCode" = I."ItemCode" And TW."WhsCode" = I."WhsCode"
+	       Left Join OMRC M On IT."FirmCode" = M."FirmCode"
+	       Left Join ITM10 I10 On IT."ItemCode" = I10."ItemCode"
+	       Left Join OCRY C On I10."ISOriCntry" = C."Code"
+		   Left Join 
+	       (Select Distinct P1."ItemCode", Cast(IfNull(P."U_BLNO",'') As Varchar) As "Quantity in Transit/Under Shipment"
+     		  From OPOR P
+       			   Inner Join POR1 P1 On P."DocEntry" = P1."DocEntry"
+             Where P."CANCELED" = 'N'
+	       ) P On IT."ItemCode" = P."ItemCode"
+		   Left Join
+	       (Select "ItemCode", Sum("SalesReturnQty") As "SalesReturnQty","BPLName"
+		      From (Select B."ItemCode",Sum(B."Quantity") As "SalesReturnQty","BPLName"
+				      From ORIN A
+						   Inner Join RIN1 B On A."DocEntry" = B."DocEntry"
+					 Where A."DocDate" Between :FDT And :TDT
+                       And A."CANCELED" = 'N'
+					 Group By B."ItemCode","BPLName"
+					 Union All  
+					Select B."ItemCode",Sum(B."Quantity") As "SalesReturnQty","BPLName"
+					  From ORDN A
+						   Inner Join RDN1 B On A."DocEntry" = B."DocEntry"
+					 Where A."DocDate" Between :FDT And :TDT
+                       And A."CANCELED" = 'N'
+					 Group By B."ItemCode","BPLName"
+			       ) A
+			 Group By "ItemCode","BPLName"
+	       ) R On IT."ItemCode" = R."ItemCode"
+	       Left Join
+	       (Select H1."ItemCode",Sum(H1."Quantity") As "LastYearSales" 
+		      From OINV H
+		           Inner Join INV1 H1 On H."DocEntry" = H1."DocEntry"
+	         Where H."DocDate" Between ADD_YEARS(ADD_MONTHS(NEXT_DAY(LAST_DAY(:FDT)),-Month(:FDT)),-1) And ADD_YEARS(:TDT,-1)
+               And H."CANCELED" = 'N'
+	         Group By H1."ItemCode"
+	        ) S On IT."ItemCode" = S."ItemCode"
+	        Left Join
+		    (Select H1."ItemCode",Sum(H1."Quantity") As "LastYearTotalSales" 
+		       From OINV H
+		            Inner Join INV1 H1 On H."DocEntry" = H1."DocEntry"
+		      Where H."DocDate" Between Year(:FDT) - 1 || '0101' And Year(:TDT) - 1 || '1231'
+		      Group By H1."ItemCode",H."DocDate"
+		    ) T On IT."ItemCode" = T."ItemCode"
+	  Where (Case When IfNull(:ITEM, '') = '' Then '' Else IT."ItemName" End) = (Case When IfNull(:ITEM, '') = '' Then '' Else :ITEM End)
+	    AND (CASE WHEN IFNULL(:BRANCH, '') = '' THEN '' ELSE R."BPLName" END = :BRANCH OR CASE WHEN IFNULL(:BRANCH, '') = '' THEN '' ELSE I."BPLName" END = :BRANCH)
+	    And (Case When IfNull(:MANUFACTURER, '') = '' Then '' Else M."FirmName" End) = (Case When IfNull(:MANUFACTURER, '') = '' Then '' Else :MANUFACTURER End);
+          
+	Insert Into "#Month"
+	Select Distinct "Month", "MonthNumber", "Year", "MonthYear"
+	  From "#Deatils";
+	
+	--Select * From "#Deatils";
+	--Select * From "#Month" Order By "Year", "Month";
+	
+	COLUMN_NAMES:='';
+	SQL_STRING:='        SELECT "ItemCode", "ItemName", "Manufacturer", "CountryOfOrigin", "WhsCode","Present Stock",'||CHAR(13)
+	||'               "Quantity in Transit/Under Shipment","Commited","Ordered", "SalesReturnQty"';
+	
+	Begin
+		DECLARE CURSOR MonthCursor FOR
+		SELECT "MonthYear"
+	  	  FROM "#Month"
+         Order By "Year", "MonthNumber";
+     
+    	FOR CursorRow AS MonthCursor       
+    	DO
+			SQL_STRING:=SQL_STRING||','||CHAR(13)
+			||'               Sum(CASE WHEN "MonthYear"='''||CursorRow."MonthYear"||''' THEN "SaleQuantity" ELSE 0 END) AS "'||CursorRow."MonthYear"||'"';
+		END FOR;
+		SQL_STRING:=SQL_STRING||','||CHAR(13);
+		FOR CursorRow1 AS MonthCursor       
+    	DO
+			SQL_STRING:=SQL_STRING||CHAR(13)
+			||'               Sum(CASE WHEN "MonthYear"='''||CursorRow1."MonthYear"||''' THEN "SaleQuantity" ELSE 0 END) +';
+		END FOR;
+		SQL_STRING:= SQL_STRING|| ' 0 As "TotalSalesInCurrentYear"'||CHAR(13);
+  	END;
+  	
+  	SQL_STRING:=SQL_STRING||CHAR(13)||'               , "LastYearSales", "LastYearTotalSales"'||CHAR(13)
+  	||'          From "#Deatils" S'||CHAR(13)
+  	||'         GROUP BY "ItemCode", "ItemName", "Manufacturer", "CountryOfOrigin", "WhsCode",'||CHAR(13) 
+  	||'               "Quantity in Transit/Under Shipment", "Present Stock", "Commited", "Ordered", "SalesReturnQty",'||CHAR(13) 
+  	||'               "LastYearSales", "LastYearTotalSales", "SaleQuantity"';
+  	   
+  	   
+    SQL_STRING2:='SELECT "ItemCode", "ItemName", "Manufacturer", "CountryOfOrigin", "WhsCode","Present Stock",'||CHAR(13)
+	||'       "Quantity in Transit/Under Shipment","Commited","Ordered", "SalesReturnQty"';	   
+  	   
+  	   
+  	Begin
+		DECLARE CURSOR MonthCursor FOR
+		SELECT "MonthYear"
+	  	  FROM "#Month"
+         Order By "Year", "MonthNumber";
+     
+    	FOR CursorRow AS MonthCursor       
+    	DO
+			SQL_STRING2:=SQL_STRING2||','||CHAR(13)
+			||'       Sum("'||CursorRow."MonthYear"||'") AS "'||CursorRow."MonthYear"||'"';
+		END FOR;
+  	END;
+  	
+  	SQL_STRING2:=SQL_STRING2||CHAR(13)||'       ,Round(Sum("TotalSalesInCurrentYear"), 2) As "TotalSalesInCurrentYear",';
+  	SQL_STRING2:=SQL_STRING2||CHAR(13)||'       "LastYearSales", "LastYearTotalSales"';
+  	SQL_STRING2:=SQL_STRING2||CHAR(13)||'  From ('||CHAR(13);
+  	SQL_STRING2:=SQL_STRING2||SQL_STRING;
+  	SQL_STRING2:=SQL_STRING2||CHAR(13)||'       ) V';
+  	SQL_STRING2:=SQL_STRING2||CHAR(13)||' Group By "ItemCode", "ItemName", "Manufacturer", "CountryOfOrigin", "WhsCode","Present Stock",';
+  	SQL_STRING2:=SQL_STRING2||CHAR(13)||'       "Quantity in Transit/Under Shipment","Commited","Ordered", "SalesReturnQty",';
+  	SQL_STRING2:=SQL_STRING2||CHAR(13)||'       "LastYearSales", "LastYearTotalSales"';
+  	SQL_STRING2:=SQL_STRING2||CHAR(13)||'Order By  "ItemCode"';
+  	                        
+  	 --SQL_STRING2:= SQL_STRING;
+    
+    --Select :SQL_STRING2 From Dummy;
+    --Select :SQL_STRING2 From Dummy;
+    EXECUTE IMMEDIATE :SQL_STRING2;
+         
+	DROP TABLE "#Deatils";
+	DROP TABLE "#Month";
+END	       
+          
+       
+--Call "FFS_SP_ITEM_STOCK_MONTHWISE" ('2024-01-01', '2024-06-09', '', '', '')
+--Call "FFS_SP_ITEM_STOCK_MONTHWISE" ('2024-02-01', '2024-02-29', 'Mango Flavour-8211 (25 Kg)', '', '')

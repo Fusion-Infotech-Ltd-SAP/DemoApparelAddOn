@@ -1,0 +1,379 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{A12CDC95-5546-44A5-A737-EAD65A675759}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Apparel_AddOn</RootNamespace>
+    <AssemblyName>Apparel_AddOn</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>Apparel_AddOn.Program</StartupObject>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="SAPBusinessOneSDK, Version=1.1.0.1, Culture=neutral, PublicKeyToken=c7c3cb60e45d119f, processorArchitecture=MSIL" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Helper\FileDialogHelper.cs" />
+    <Compile Include="Helper\Global.cs" />
+    <Compile Include="Helper\GlobalFunction.cs" />
+    <Compile Include="Helper\NetworkShareHelper.cs" />
+    <Compile Include="Modules\SalesQuotation.cs" />
+    <Compile Include="Modules\StandardFormManipulation.cs" />
+    <Compile Include="Modules\SYS_FORM_GRPO.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Menu.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Resources\B2BLC.b1f.cs">
+      <DependentUpon>B2BLC.b1f</DependentUpon>
+    </Compile>
+    <Compile Include="Resources\B2BLCAmendment.b1f.cs">
+      <DependentUpon>B2BLCAmendment.b1f</DependentUpon>
+    </Compile>
+    <Compile Include="Resources\BrandMaster.b1f.cs">
+      <DependentUpon>BrandMaster.b1f</DependentUpon>
+    </Compile>
+    <Compile Include="Resources\CAD.b1f.cs">
+      <DependentUpon>CAD.b1f</DependentUpon>
+    </Compile>
+    <Compile Include="Resources\ColorMaster.b1f.cs">
+      <DependentUpon>ColorMaster.b1f</DependentUpon>
+    </Compile>
+    <Compile Include="Resources\ComponentStages.b1f.cs">
+      <DependentUpon>ComponentStages.b1f</DependentUpon>
+    </Compile>
+    <Compile Include="Resources\Costing.b1f.cs">
+      <DependentUpon>Costing.b1f</DependentUpon>
+    </Compile>
+    <Compile Include="Resources\CPMMaster.b1f.cs">
+      <DependentUpon>CPMMaster.b1f</DependentUpon>
+    </Compile>
+    <Compile Include="Resources\CustomerBrandRelation.b1f.cs">
+      <DependentUpon>CustomerBrandRelation.b1f</DependentUpon>
+    </Compile>
+    <Compile Include="Resources\DownPayment.b1f.cs">
+      <DependentUpon>DownPayment.b1f</DependentUpon>
+    </Compile>
+    <Compile Include="Resources\FirstBankMaster.b1f.cs">
+      <DependentUpon>FirstBankMaster.b1f</DependentUpon>
+    </Compile>
+    <Compile Include="Resources\Form_No_POList.b1f.cs">
+      <DependentUpon>Form_No_POList.b1f</DependentUpon>
+    </Compile>
+    <Compile Include="Resources\GarmentsTypeMaster.b1f.cs">
+      <DependentUpon>GarmentsTypeMaster.b1f</DependentUpon>
+    </Compile>
+    <Compile Include="Resources\GenderMasterType.b1f.cs">
+      <DependentUpon>GenderMasterType.b1f</DependentUpon>
+    </Compile>
+    <Compile Include="Resources\IESamMaster.b1f.cs">
+      <DependentUpon>IESamMaster.b1f</DependentUpon>
+    </Compile>
+    <Compile Include="Resources\MasterLC.b1f.cs">
+      <DependentUpon>MasterLC.b1f</DependentUpon>
+    </Compile>
+    <Compile Include="Resources\MasterLCAmendment.b1f.cs">
+      <DependentUpon>MasterLCAmendment.b1f</DependentUpon>
+    </Compile>
+    <Compile Include="Resources\MRP.b1f.cs">
+      <DependentUpon>MRP.b1f</DependentUpon>
+    </Compile>
+    <Compile Include="Resources\ORDRQUANSEG.b1f.cs">
+      <DependentUpon>ORDRQUANSEG.b1f</DependentUpon>
+    </Compile>
+    <Compile Include="Resources\OtherCostParam.b1f.cs">
+      <DependentUpon>OtherCostParam.b1f</DependentUpon>
+    </Compile>
+    <Compile Include="Resources\OtherCostTemplate.b1f.cs">
+      <DependentUpon>OtherCostTemplate.b1f</DependentUpon>
+    </Compile>
+    <Compile Include="Resources\OTT.b1f.cs">
+      <DependentUpon>OTT.b1f</DependentUpon>
+    </Compile>
+    <Compile Include="Resources\PortMaster.b1f.cs">
+      <DependentUpon>PortMaster.b1f</DependentUpon>
+    </Compile>
+    <Compile Include="Resources\PositionMaster.b1f.cs">
+      <DependentUpon>PositionMaster.b1f</DependentUpon>
+    </Compile>
+    <Compile Include="Resources\ProductCategory.b1f.cs">
+      <DependentUpon>ProductCategory.b1f</DependentUpon>
+    </Compile>
+    <Compile Include="Resources\ProductGroup.b1f.cs">
+      <DependentUpon>ProductGroup.b1f</DependentUpon>
+    </Compile>
+    <Compile Include="Resources\ProductLine.b1f.cs">
+      <DependentUpon>ProductLine.b1f</DependentUpon>
+    </Compile>
+    <Compile Include="Resources\ProductType.b1f.cs">
+      <DependentUpon>ProductType.b1f</DependentUpon>
+    </Compile>
+    <Compile Include="Resources\Routing.b1f.cs">
+      <DependentUpon>Routing.b1f</DependentUpon>
+    </Compile>
+    <Compile Include="Resources\SalesContract.b1f.cs">
+      <DependentUpon>SalesContract.b1f</DependentUpon>
+    </Compile>
+    <Compile Include="Resources\SalesContractAmendment.b1f.cs">
+      <DependentUpon>SalesContractAmendment.b1f</DependentUpon>
+    </Compile>
+    <Compile Include="Resources\SampleMaster.b1f.cs">
+      <DependentUpon>SampleMaster.b1f</DependentUpon>
+    </Compile>
+    <Compile Include="Resources\SamplePreCosting.b1f.cs">
+      <DependentUpon>SamplePreCosting.b1f</DependentUpon>
+    </Compile>
+    <Compile Include="Resources\SampleStatus.b1f.cs">
+      <DependentUpon>SampleStatus.b1f</DependentUpon>
+    </Compile>
+    <Compile Include="Resources\SampleType.b1f.cs">
+      <DependentUpon>SampleType.b1f</DependentUpon>
+    </Compile>
+    <Compile Include="Resources\SeasonMaster.b1f.cs">
+      <DependentUpon>SeasonMaster.b1f</DependentUpon>
+    </Compile>
+    <Compile Include="Resources\SecondBankMaster.b1f.cs">
+      <DependentUpon>SecondBankMaster.b1f</DependentUpon>
+    </Compile>
+    <Compile Include="Resources\SegmentMaster.b1f.cs">
+      <DependentUpon>SegmentMaster.b1f</DependentUpon>
+    </Compile>
+    <Compile Include="Resources\SizeColorConsumption.b1f.cs">
+      <DependentUpon>SizeColorConsumption.b1f</DependentUpon>
+    </Compile>
+    <Compile Include="Resources\SizeGroupMaster.b1f.cs">
+      <DependentUpon>SizeGroupMaster.b1f</DependentUpon>
+    </Compile>
+    <Compile Include="Resources\SizeMaster.b1f.cs">
+      <DependentUpon>SizeMaster.b1f</DependentUpon>
+    </Compile>
+    <Compile Include="Resources\SizeParamMaster.b1f.cs">
+      <DependentUpon>SizeParamMaster.b1f</DependentUpon>
+    </Compile>
+    <Compile Include="Resources\SizeTypeMaster.b1f.cs">
+      <DependentUpon>SizeTypeMaster.b1f</DependentUpon>
+    </Compile>
+    <Compile Include="Resources\SleeveTypeMaster.b1f.cs">
+      <DependentUpon>SleeveTypeMaster.b1f</DependentUpon>
+    </Compile>
+    <Compile Include="Resources\StyleDepartment.b1f.cs">
+      <DependentUpon>StyleDepartment.b1f</DependentUpon>
+    </Compile>
+    <Compile Include="Resources\StyleMaster.b1f.cs">
+      <DependentUpon>StyleMaster.b1f</DependentUpon>
+    </Compile>
+    <Compile Include="Resources\SubColor.b1f.cs">
+      <DependentUpon>SubColor.b1f</DependentUpon>
+    </Compile>
+    <Compile Include="Resources\SubDivision.b1f.cs">
+      <DependentUpon>SubDivision.b1f</DependentUpon>
+    </Compile>
+    <Compile Include="Resources\UseType.b1f.cs">
+      <DependentUpon>UseType.b1f</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <None Include="AddFiles\DataBaseDesign\FIL_LC_DatabaseDesign.xlsx" />
+    <None Include="AddFiles\Documents\SizeTypeDocument.docx" />
+    <None Include="Resources\B2BLC.b1f">
+      <FormCategory>UserForm</FormCategory>
+    </None>
+    <None Include="Resources\B2BLCAmendment.b1f">
+      <FormCategory>UserForm</FormCategory>
+    </None>
+    <None Include="Resources\BrandMaster.b1f">
+      <FormCategory>UserForm</FormCategory>
+    </None>
+    <None Include="Resources\CAD.b1f">
+      <FormCategory>UserForm</FormCategory>
+    </None>
+    <None Include="Resources\ColorMaster.b1f">
+      <FormCategory>UserForm</FormCategory>
+    </None>
+    <None Include="Resources\ComponentStages.b1f">
+      <FormCategory>UserForm</FormCategory>
+    </None>
+    <None Include="Resources\Costing.b1f">
+      <FormCategory>UserForm</FormCategory>
+    </None>
+    <None Include="Resources\CPMMaster.b1f">
+      <FormCategory>UserForm</FormCategory>
+    </None>
+    <None Include="Resources\CustomerBrandRelation.b1f">
+      <FormCategory>UserForm</FormCategory>
+    </None>
+    <None Include="Resources\DownPayment.b1f">
+      <FormCategory>UserForm</FormCategory>
+    </None>
+    <None Include="Resources\FirstBankMaster.b1f">
+      <FormCategory>UserForm</FormCategory>
+    </None>
+    <None Include="Resources\Form_No_POList.b1f">
+      <FormCategory>UserForm</FormCategory>
+    </None>
+    <None Include="Resources\GarmentsTypeMaster.b1f">
+      <FormCategory>UserForm</FormCategory>
+    </None>
+    <None Include="Resources\GenderMasterType.b1f">
+      <FormCategory>UserForm</FormCategory>
+    </None>
+    <None Include="Resources\IESamMaster.b1f">
+      <FormCategory>UserForm</FormCategory>
+    </None>
+    <None Include="Resources\MasterLC.b1f">
+      <FormCategory>UserForm</FormCategory>
+    </None>
+    <None Include="Resources\MasterLCAmendment.b1f">
+      <FormCategory>UserForm</FormCategory>
+    </None>
+    <None Include="Resources\MRP.b1f">
+      <FormCategory>UserForm</FormCategory>
+    </None>
+    <None Include="Resources\ORDRQUANSEG.b1f">
+      <FormCategory>UserForm</FormCategory>
+    </None>
+    <None Include="Resources\OtherCostParam.b1f">
+      <FormCategory>UserForm</FormCategory>
+    </None>
+    <None Include="Resources\OtherCostTemplate.b1f">
+      <FormCategory>UserForm</FormCategory>
+    </None>
+    <None Include="Resources\OTT.b1f">
+      <FormCategory>UserForm</FormCategory>
+    </None>
+    <None Include="Resources\PortMaster.b1f">
+      <FormCategory>UserForm</FormCategory>
+    </None>
+    <None Include="Resources\PositionMaster.b1f">
+      <FormCategory>UserForm</FormCategory>
+    </None>
+    <None Include="Resources\ProductCategory.b1f">
+      <FormCategory>UserForm</FormCategory>
+    </None>
+    <None Include="Resources\ProductGroup.b1f">
+      <FormCategory>UserForm</FormCategory>
+    </None>
+    <None Include="Resources\ProductLine.b1f">
+      <FormCategory>UserForm</FormCategory>
+    </None>
+    <None Include="Resources\ProductType.b1f">
+      <FormCategory>UserForm</FormCategory>
+    </None>
+    <None Include="Resources\Routing.b1f">
+      <FormCategory>UserForm</FormCategory>
+    </None>
+    <None Include="Resources\SalesContract.b1f">
+      <FormCategory>UserForm</FormCategory>
+    </None>
+    <None Include="Resources\SalesContractAmendment.b1f">
+      <FormCategory>UserForm</FormCategory>
+    </None>
+    <None Include="Resources\SampleMaster.b1f">
+      <FormCategory>UserForm</FormCategory>
+    </None>
+    <None Include="Resources\SamplePreCosting.b1f">
+      <FormCategory>UserForm</FormCategory>
+    </None>
+    <None Include="Resources\SampleStatus.b1f">
+      <FormCategory>UserForm</FormCategory>
+    </None>
+    <None Include="Resources\SampleType.b1f">
+      <FormCategory>UserForm</FormCategory>
+    </None>
+    <None Include="Resources\SeasonMaster.b1f">
+      <FormCategory>UserForm</FormCategory>
+    </None>
+    <None Include="Resources\SecondBankMaster.b1f">
+      <FormCategory>UserForm</FormCategory>
+    </None>
+    <None Include="Resources\SegmentMaster.b1f">
+      <FormCategory>UserForm</FormCategory>
+    </None>
+    <None Include="Resources\SizeColorConsumption.b1f">
+      <FormCategory>UserForm</FormCategory>
+    </None>
+    <None Include="Resources\SizeGroupMaster.b1f">
+      <FormCategory>UserForm</FormCategory>
+    </None>
+    <None Include="Resources\SizeMaster.b1f">
+      <FormCategory>UserForm</FormCategory>
+    </None>
+    <None Include="Resources\SizeParamMaster.b1f">
+      <FormCategory>UserForm</FormCategory>
+    </None>
+    <None Include="Resources\SizeTypeMaster.b1f">
+      <FormCategory>UserForm</FormCategory>
+    </None>
+    <None Include="Resources\SleeveTypeMaster.b1f">
+      <FormCategory>UserForm</FormCategory>
+    </None>
+    <None Include="Resources\StyleDepartment.b1f">
+      <FormCategory>UserForm</FormCategory>
+    </None>
+    <None Include="Resources\StyleMaster.b1f">
+      <FormCategory>UserForm</FormCategory>
+    </None>
+    <None Include="Resources\SubColor.b1f">
+      <FormCategory>UserForm</FormCategory>
+    </None>
+    <None Include="Resources\SubDivision.b1f">
+      <FormCategory>UserForm</FormCategory>
+    </None>
+    <None Include="Resources\UseType.b1f">
+      <FormCategory>UserForm</FormCategory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="AddFiles\Documents\Hana Query.txt" />
+    <Content Include="AddFiles\Hana\SP_ITEM_STOCK_MONTHWISE.txt" />
+    <Content Include="AddFiles\Logo\Applog16.bmp" />
+    <Content Include="AddFiles\Logo\Applog16.png" />
+    <Content Include="AddFiles\Logo\Applog24.png" />
+    <Content Include="AddFiles\Logo\Applog32.png" />
+    <Content Include="AddFiles\Logo\test.jpg" />
+    <Content Include="AddFiles\Logo\test.png" />
+    <Content Include="AddFiles\Logo\try.bmp" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
